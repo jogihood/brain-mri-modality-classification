@@ -1,17 +1,4 @@
 import sys
-import os
-import gc
-import numpy as np
-import modules.model as mdl
-import modules.dataset as ds
-import modules.preprocessing as pre
-import torch
-from tqdm import tqdm
-
-# GPU Setup
-os.environ["CUDA_VISIBLE_DEVICES"]= "5"
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 # args
 if len(sys.argv) != 3:
     print("test.py - Script used for testing models")
@@ -25,16 +12,31 @@ if len(sys.argv) != 3:
     print("\t\t[train_dataset] - Set a dataset for testing a model")
     print("\t\t\tOnly 'oasis3' dataset is available at the moment.")
     sys.exit()
-else:
-    if sys.argv[1] == "default":
-        model_no = "230604_1731"
-    else:
-        model_no = sys.argv[1]
 
-    if sys.argv[2] == "oasis3":
-        train_dataset = ds.oasis3
-    elif sys.argv[2] == "something else":
-        pass
+print("Importing modules...")
+import os
+import gc
+import numpy as np
+import modules.model as mdl
+import modules.dataset as ds
+import modules.preprocessing as pre
+import torch
+from tqdm import tqdm
+print("Importing complete.")
+
+if sys.argv[1] == "default":
+    model_no = "default"
+else:
+    model_no = sys.argv[1]
+
+if sys.argv[2] == "oasis3":
+    train_dataset = ds.oasis3
+elif sys.argv[2] == "something else":
+    pass
+
+# GPU Setup
+os.environ["CUDA_VISIBLE_DEVICES"]= "5"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 classes = ["T1", "T2", "FLAIR"]
 loss = []
@@ -55,7 +57,7 @@ pbar = tqdm(train_dataset.files)
 
 for i, f in enumerate(pbar):
     # preprocessing
-    try: test_image = pre.preprocess_from_file(f, (224, 224), simple=True, dim=2)
+    try: test_image = pre.preprocess_from_file(f, (224, 224))
     except Exception as e: continue # some files cannot be read, so I added exception
     X = torch.from_numpy(test_image.astype(np.float32)).unsqueeze(0).unsqueeze(0)
 
