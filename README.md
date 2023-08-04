@@ -5,7 +5,7 @@
 2. Train your model with ```python scripts/train.py```
 3. Test your model with ```python scripts/test.py default oasis3```
 
-## Used Datasets
+## Datasets
 |Dataset|Modality|Details|
 |------------|-------|-------------------|
 | ADNI1      | T1    | MPRAGE            |
